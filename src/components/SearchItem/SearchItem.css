@@ -1,0 +1,5 @@
+.location-search-input, .autocomplete-dropdown-container{
+    font-weight: 300;
+    font-size: 24px;
+    width: 400px;
+}

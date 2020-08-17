@@ -1,0 +1,54 @@
+.hourline ul{
+    display: flex;
+    padding-top: 14px;
+}
+.hourline ul li{
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+    margin: 0px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    /* border: 1px solid #8fa8cf; */
+    border-top:1px solid #8fa8cf;
+    border-bottom:1px solid #8fa8cf;
+}
+.hourline ul li div{
+    list-style: none;
+    text-align: center;
+    margin-top: -4px;
+}
+.hourline ul .tod_begin{
+    background-color:#8fa8cf;
+    color:#fff;
+    border-left:1px solid #8fa8cf;
+    border-radius: 8px 0px 0px 8px;
+}
+.hourline ul .tod_begin .dow{
+    color: #888;
+    margin-top: -20px;
+}
+.hourline ul .tod_end{
+    background-color:#8fa8cf;
+    border-right:1px solid #8fa8cf;
+    border-radius: 0px 8px 8px 0px;
+}
+.hourline ul .tod_n{
+    background-color:#95b3d7;
+    color:#edfbff;
+    border-left:none;
+    border-right:none;
+}
+.hourline ul .tod_d{
+    background-color:#fffff3;
+    color:#8fa8cf;
+    border-left:none;
+    border-right:none;
+}
+.hourline ul .tod_m, .hourline ul .tod_e{
+    background-color:#edfbff;
+    color:#8fa8cf;
+    border-left:none;
+    border-right:none;
+}
