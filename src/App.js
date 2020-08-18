@@ -37,7 +37,7 @@ class App extends Component {
             buttonHomeClicked: false,
             address:"",
             showModalNewEvent: false,
-            eventName:"",
+            eventName:"New meeting",
             eventDescription:"",
             eventHostname:""
         };   
@@ -301,7 +301,7 @@ class App extends Component {
     onSubmitAddEvent = (event) => {
         event.preventDefault();
         let indexIsHome = -1;
-        let subCities = []
+        let subcities = []
         for (let i = 0; i < this.state.city.length; i++)
         {
             if (this.state.city[i].isHome)
@@ -310,44 +310,44 @@ class App extends Component {
             }
             else
             {
-                subCities = [
-                    ...subCities,
+                subcities = [
+                    ...subcities,
                     {
-                        Name: this.state.city[i].Name,
-                        Timezone: this.state.city[i].Timezone
+                        name: this.state.city[i].Name,
+                        timezone: this.state.city[i].Timezone
                     }
                 ]
             }
         }
         const addEvent = {
-            eventName: this.state.eventName,
-            baseTimezone:this.state.city[indexIsHome].Timezone,
-            baseLocation:this.state.city[indexIsHome].Name,
-            timeStart:this.state.city[indexIsHome].StartTime,
-            timeEnd:this.state.city[indexIsHome].EndTime,
+            eventname: this.state.eventName,
+            basetimezone:this.state.city[indexIsHome].Timezone,
+            baselocation:this.state.city[indexIsHome].Name,
+            timestart:this.state.city[indexIsHome].StartTime,
+            timeend:this.state.city[indexIsHome].EndTime,
             description: this.state.eventDescription,
             hostname: this.state.eventHostname,
-            subCities: subCities
+            subcities: subcities
         }
 
-        axios.post(`https://jsonplaceholder.typicode.com/posts`, addEvent)
-            .then(function (response) {
-                // console.log(JSON.stringify(response));
-            })
-            .catch(function (error) {
-                // console.log(error);
-            });
+        // axios.post(`https://jsonplaceholder.typicode.com/posts`, addEvent)
+        //     .then(function (response) {
+        //         // console.log(JSON.stringify(response));
+        //     })
+        //     .catch(function (error) {
+        //         // console.log(error);
+        //     });
         
         // Test with fetch
-        // fetch('https://webhook.site/184211d4-bf10-40ee-bc5e-b6e14f68acf3',{
-        //     method:'post',
-        //     mode:'no-cors',
-        //     headers:{
-        //         'Accept':'application/json',
-        //         'Content-type':'application/json',
-        //     },
-        //     body: JSON.stringify(addEvent)
-        // })
+        fetch('https://webhook.site/184211d4-bf10-40ee-bc5e-b6e14f68acf3',{
+            method:'post',
+            mode:'no-cors',
+            headers:{
+                'Accept':'application/json',
+                'Content-type':'application/json',
+            },
+            body: JSON.stringify(addEvent)
+        })
     }
 
     /** Handle when user type event name */
