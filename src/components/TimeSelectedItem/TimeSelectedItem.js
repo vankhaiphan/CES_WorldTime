@@ -10,7 +10,7 @@ function TimeSelectedItem(props) {
             </div>
             <div className="location">
                 <span className="city">
-                    <b>{item.Name}</b>
+                    <b>{item.Name.split(',')[0]}</b>
                     {
                         (item.isHome === true) ? 
                             <small>{"HOME"}</small>

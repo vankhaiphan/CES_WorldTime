@@ -7,6 +7,7 @@ function SearchItem(pros) {
     return(
         <PlacesAutocomplete
             value={address}
+            searchOptions={{types:['(cities)']}}
             onChange={handleChange}
             onSelect={handleSelect}
         >

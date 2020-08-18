@@ -240,6 +240,7 @@ class App extends Component {
         }
     }
 
+    /** Handle when user change date */
     onChangeDatePicker = (date) =>{
         startValue = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0)
         endValue = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 24, 0, 0)
@@ -258,6 +259,7 @@ class App extends Component {
         });
     }
 
+    /** Look for localStorage and update state city if possible */
     componentWillMount(){
         if (localStorage.getItem('city') !== null)
         {
@@ -285,14 +287,17 @@ class App extends Component {
         }
     }
 
+    /** Update localStorage */
     componentWillUpdate(nextProps, nextState){
         localStorage.setItem('city', JSON.stringify(nextState.city));
     }
 
+    /** Change visibility of Modal new event */
     toggle = () => {
         this.setState({showModalNewEvent: !this.state.showModalNewEvent});
     }
 
+    /** Handle when submit new event */
     onSubmitAddEvent = (event) => {
         event.preventDefault();
         let indexIsHome = -1;
@@ -324,22 +329,38 @@ class App extends Component {
             hostname: this.state.eventHostname,
             subCities: subCities
         }
-        // console.log(addEvent);
-        axios.post(`http://localhost:3000/addEvent`, { addEvent })
-            .then(res => {
-                // console.log(res);
-                // console.log(res.data);
+
+        axios.post(`https://jsonplaceholder.typicode.com/posts`, addEvent)
+            .then(function (response) {
+                // console.log(JSON.stringify(response));
             })
+            .catch(function (error) {
+                // console.log(error);
+            });
+        
+        // Test with fetch
+        // fetch('https://webhook.site/184211d4-bf10-40ee-bc5e-b6e14f68acf3',{
+        //     method:'post',
+        //     mode:'no-cors',
+        //     headers:{
+        //         'Accept':'application/json',
+        //         'Content-type':'application/json',
+        //     },
+        //     body: JSON.stringify(addEvent)
+        // })
     }
 
+    /** Handle when user type event name */
     onChangeEventName = (event) => {
         this.setState({eventName: event.target.value});
     }
 
+    /** Handle when user type event description */
     onChangeEventDescription = (event) => {
         this.setState({eventDescription: event.target.value});
     }
 
+    /** Handle when user type host name */
     onChangeEventHostname = (event) => {
         this.setState({eventHostname: event.target.value});
     }
@@ -364,15 +385,18 @@ class App extends Component {
                             <ModalBody>                                
                                 <FormGroup>
                                     <Label for="exampleText">Event name</Label>
-                                    <Input type="text" name="eventName" placeholder="Event name" onChange={this.onChangeEventName}></Input>
+                                    <Input type="text" name="eventName" placeholder="Event name" defaultValue="New meeting"
+                                        onChange={this.onChangeEventName}></Input>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="exampleText">Event description</Label>
-                                    <Input type="text" name="eventDescription" placeholder="Event description" onChange={this.onChangeEventDescription}></Input>
+                                    <Input type="text" name="eventDescription" placeholder="Event description"
+                                        onChange={this.onChangeEventDescription}></Input>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="exampleText">Host name</Label>
-                                    <Input type="text" name="eventHostname" placeholder="Host name" onChange={this.onChangeEventHostname}></Input>
+                                    <Input type="text" name="eventHostname" placeholder="Host name" 
+                                        onChange={this.onChangeEventHostname}></Input>
                                 </FormGroup>
                                 {
                                     this.state.city.length > 0 && this.state.city.map((item) => 
