@@ -1,7 +1,7 @@
 .icon{
     margin-top:14px;
     position:relative;
-    width:32px;
+    width:16px;
     height:32px;
     float:left;
     font-weight:700;
@@ -18,17 +18,15 @@
     margin:0;
     padding-top:14px;
     font-weight:normal;
-    width:200px;
+    width:126px;
     height:46px;
     float:left;
 }
 .location b{
     font-weight: bold;
-    width: 200px;
 }
 
 .city{
-    width: 200px;
     /* overflow:hidden;
     white-space:nowrap;
     text-overflow:ellipsis; */
@@ -63,7 +61,7 @@
 
 .data{
     padding-top:14px;
-    width:200px;
+    width:180px;
     height:46px;
     display: flex;
     /* text-align:left; */
@@ -76,7 +74,7 @@
     font-size:12px;
     font-weight:700;
     /* background-color:inherit; */
-    width:90px;
+    width:80px;
     text-align:right;
 }
 .date{
@@ -84,7 +82,7 @@
     /* vertical-align:middle; */
     color:#888;
     /* background-color:inherit; */
-    width:90px;
+    width:80px;
     text-align:right;
 }
 

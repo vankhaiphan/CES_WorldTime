@@ -3,3 +3,6 @@
     width: 120px;
     height: 42px;
 }
+.react-date-picker__inputGroup{
+    font-size: 12px;
+}

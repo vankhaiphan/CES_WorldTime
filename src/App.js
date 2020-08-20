@@ -9,6 +9,8 @@ import TimeLineItem from './components/TimeLineItem/TimeLineItem';
 import SearchItem from './components/SearchItem/SearchItem';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, ListGroup, ListGroupItem } from 'reactstrap';
 import axios from 'axios';
+import './api/userService';
+import userService from './api/userService';
 
 let cityCountryTimezone = require("city-country-timezone")
 
@@ -19,8 +21,8 @@ let range = [ new Date(today.getFullYear(), today.getMonth(), today.getDate(), 9
                 new Date(today.getFullYear(), today.getMonth(), today.getDate(), 10, 0, 0)];
 
 class App extends Component {
-    constructor(pros){
-        super(pros);
+    constructor(props){
+        super(props);
         this.state = {
             city:[   
                 // {   Name:"Da Nang", 
@@ -47,7 +49,7 @@ class App extends Component {
         this.onChangeSearchInput = this.onChangeSearchInput.bind(this);
         this.onSelectSearchInput = this.onSelectSearchInput.bind(this);
         this.onChangeDatePicker = this.onChangeDatePicker.bind(this);
-        this.toggle = this.toggle.bind(this);
+        this.toggleNewEvent = this.toggleNewEvent.bind(this);
     }
 
     onDragStart = (e, index) => {
@@ -292,8 +294,14 @@ class App extends Component {
         localStorage.setItem('city', JSON.stringify(nextState.city));
     }
 
+    onSubmitGetEvent = (event) => {
+        event.preventDefault();
+        let data = userService.getEventList();
+        console.log("list: ",data);
+    }
+
     /** Change visibility of Modal new event */
-    toggle = () => {
+    toggleNewEvent = () => {
         this.setState({showModalNewEvent: !this.state.showModalNewEvent});
     }
 
@@ -330,6 +338,8 @@ class App extends Component {
             subcities: subcities
         }
 
+        userService.createEvent(addEvent);
+        this.toggleNewEvent();
         // axios.post(`https://jsonplaceholder.typicode.com/posts`, addEvent)
         //     .then(function (response) {
         //         // console.log(JSON.stringify(response));
@@ -339,16 +349,17 @@ class App extends Component {
         //     });
         
         // Test with fetch
-        fetch('https://webhook.site/184211d4-bf10-40ee-bc5e-b6e14f68acf3',{
-            method:'post',
-            mode:'no-cors',
-            headers:{
-                'Accept':'application/json',
-                'Content-type':'application/json',
-            },
-            body: JSON.stringify(addEvent)
-        })
+        // fetch('https://webhook.site/184211d4-bf10-40ee-bc5e-b6e14f68acf3',{
+        //     method:'post',
+        //     mode:'no-cors',
+        //     headers:{
+        //         'Accept':'application/json',
+        //         'Content-type':'application/json',
+        //     },
+        //     body: JSON.stringify(addEvent)
+        // })
     }
+    
 
     /** Handle when user type event name */
     onChangeEventName = (event) => {
@@ -378,67 +389,65 @@ class App extends Component {
                         onChange={this.onChangeDatePicker} 
                         startTime={this.state.startTime} 
                     /> 
-                    <Button color="success" className="buttonNewEvent" onClick={this.toggle}>New event</Button>  
-                    <Modal isOpen={this.state.showModalNewEvent} toggle={this.toggle} className="modalNewEvent">
-                        <Form onSubmit={this.onSubmitAddEvent}> 
-                            <ModalHeader toggle={this.toggle}>Create new event</ModalHeader>
-                            <ModalBody>                                
-                                <FormGroup>
-                                    <Label for="exampleText">Event name</Label>
-                                    <Input type="text" name="eventName" placeholder="Event name" defaultValue="New meeting"
-                                        onChange={this.onChangeEventName}></Input>
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label for="exampleText">Event description</Label>
-                                    <Input type="text" name="eventDescription" placeholder="Event description"
-                                        onChange={this.onChangeEventDescription}></Input>
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label for="exampleText">Host name</Label>
-                                    <Input type="text" name="eventHostname" placeholder="Host name" 
-                                        onChange={this.onChangeEventHostname}></Input>
-                                </FormGroup>
+                    <Button color="success" className="buttonNewEvent" onClick={this.toggleNewEvent}>New event</Button> 
+                    <Modal isOpen={this.state.showModalNewEvent} toggle={this.toggleNewEvent} className="modalNewEvent">
+                        <ModalHeader toggle={this.toggleNewEvent}>Create new event</ModalHeader>
+                        <ModalBody>
+                            <FormGroup>
+                                <Label for="exampleText">Event name</Label>
+                                <Input type="text" name="eventName" placeholder="Event name" defaultValue="New meeting"
+                                    onChange={this.onChangeEventName}></Input>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="exampleText">Event description</Label>
+                                <Input type="text" name="eventDescription" placeholder="Event description"
+                                    onChange={this.onChangeEventDescription}></Input>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="exampleText">Host name</Label>
+                                <Input type="text" name="eventHostname" placeholder="Host name" 
+                                    onChange={this.onChangeEventHostname}></Input>
+                            </FormGroup>
+                            {
+                                this.state.city.length > 0 && this.state.city.map((item) => 
+                                (   item.isHome===true?
+                                        <FormGroup>
+                                            <FormGroup>
+                                                <Label for="exampleText">Host location</Label>
+                                                <Input type="text" id="eventHostLocation" placeholder="Host location" value={item.Name} disabled></Input>
+                                            </FormGroup>
+                                            <FormGroup>
+                                                <Label for="exampleText">Host timezone</Label>
+                                                <Input type="text" id="eventHostTimeZone" placeholder="Host location" value={item.Timezone} disabled></Input>
+                                            </FormGroup>
+                                            <FormGroup>
+                                                <Label for="exampleText">Start Time</Label>
+                                                <Input type="text" id="eventTimeStart" value={item.StartTime} disabled></Input>
+                                            </FormGroup>
+                                            <FormGroup>
+                                                <Label for="exampleText">End Time</Label>
+                                                <Input type="text" id="eventTimeEnd" value={item.EndTime} disabled></Input>
+                                            </FormGroup>
+                                        </FormGroup>
+                                    :null
+                                ))
+                            }
+                            <ListGroup>
+                                <Label for="exampleText">Invited location</Label>
                                 {
                                     this.state.city.length > 0 && this.state.city.map((item) => 
-                                    (   item.isHome===true?
-                                            <FormGroup>
-                                                <FormGroup>
-                                                    <Label for="exampleText">Host location</Label>
-                                                    <Input type="text" id="eventHostLocation" placeholder="Host location" value={item.Name} disabled></Input>
-                                                </FormGroup>
-                                                <FormGroup>
-                                                    <Label for="exampleText">Host timezone</Label>
-                                                    <Input type="text" id="eventHostTimeZone" placeholder="Host location" value={item.Timezone} disabled></Input>
-                                                </FormGroup>
-                                                <FormGroup>
-                                                    <Label for="exampleText">Start Time</Label>
-                                                    <Input type="text" id="eventTimeStart" value={item.StartTime} disabled></Input>
-                                                </FormGroup>
-                                                <FormGroup>
-                                                    <Label for="exampleText">End Time</Label>
-                                                    <Input type="text" id="eventTimeEnd" value={item.EndTime} disabled></Input>
-                                                </FormGroup>
-                                            </FormGroup>
+                                    (   item.isHome!==true?
+                                            <ListGroupItem disabled>{item.Name}</ListGroupItem>
                                         :null
                                     ))
                                 }
-                                <ListGroup>
-                                    <Label for="exampleText">Invited location</Label>
-                                    {
-                                        this.state.city.length > 0 && this.state.city.map((item) => 
-                                        (   item.isHome!==true?
-                                                <ListGroupItem disabled>{item.Name}</ListGroupItem>
-                                            :null
-                                        ))
-                                    }
-                                </ListGroup>
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button color="primary" type="submit" onClick={this.toggle}>Save</Button>
-                                <Button color="secondary" onClick={this.toggle}>Cancel</Button>
-                            </ModalFooter>
-                        </Form>
-                    </Modal>                
+                            </ListGroup>
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="primary" type="submit" onClick={this.onSubmitAddEvent}>Save</Button>
+                            <Button color="secondary" onClick={this.toggleNewEvent}>Cancel</Button>
+                        </ModalFooter>
+                    </Modal>
                 </div>
                 <main className="main"> 
                     <div className="background-timeline">
@@ -474,14 +483,7 @@ class App extends Component {
                             displayTime = {this.displayTime}
                         />   
                     </div>          
-                </main>                
-                {
-                    (this.state.city.length > 0) && 
-                    <div className="ShowInfo">
-                        <div>Start Time: {this.state.startTime.getHours()} : {this.state.startTime.getMinutes()}</div>
-                        <div>End Time: {this.state.endTime.getHours()} : {this.state.endTime.getMinutes()}</div>
-                    </div>                    
-                }                
+                </main>                        
             </div>
         );
     }    
