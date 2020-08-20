@@ -1,5 +1,4 @@
 .wrapper {
-  height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -10,7 +9,7 @@
 }
 
 .form-wrapper {
-  margin-top:-200px;
+  margin-top: 60px;
   width: 400px;
   display: flex;
   flex-direction: column;

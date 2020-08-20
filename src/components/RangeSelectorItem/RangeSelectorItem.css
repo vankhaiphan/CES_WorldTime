@@ -1,5 +1,4 @@
 .range-selector{
-    flex-basis: 769px;
-    margin-left: 342px;
-    margin-top: 10px;
+    position: absolute;
+    right: 10px;
 }

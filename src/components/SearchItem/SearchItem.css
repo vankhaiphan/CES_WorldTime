@@ -1,8 +1,28 @@
 .location-search-input, .autocomplete-dropdown-container{
     font-weight: 300;
-    font-size: 24px;
+    font-size: 14px;
     width: 400px;
 }
 .location-search-input{
     height: 42px;
+}
+
+.search-result {
+    position: relative;
+}
+
+.autocomplete-dropdown-container {
+    background: #fff;
+    position: absolute;
+    top: 45px;
+    z-index: 2;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 4px #ddd;
+    padding: 10px 0;
+    border-radius: 2px;
+}
+
+.suggestion-item,
+.suggestion-item--active {
+    padding: 5px 10px;
 }

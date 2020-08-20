@@ -11,6 +11,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, La
 import axios from 'axios';
 import './api/userService';
 import userService from './api/userService';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 let cityCountryTimezone = require("city-country-timezone")
 
@@ -41,7 +42,8 @@ class App extends Component {
             showModalNewEvent: false,
             eventName:"New meeting",
             eventDescription:"",
-            eventHostname:""
+            eventHostname:"",
+            isLogin:true
         };   
         this.displayTime = this.displayTime.bind(this);
         this.onHomeClick = this.onHomeClick.bind(this);
@@ -191,55 +193,52 @@ class App extends Component {
 
     /** Handle when user choose an item as Home location */
     onHomeClick(chosen){
-        return (event) => {
-            this.setState(({ city }) => (
-                city.map((item, idx) => {
-                    item.Name !== chosen.Name?
-                        item.isHome = false:
-                        item.isHome = true
-                })
-            ));
-            this.setState({ baseTimeDiff: chosen.TimeDiff, buttonHomeClicked:true})        
-        };
+        this.setState(({ city }) => (
+            city.map((item, idx) => {
+                item.Name !== chosen.Name?
+                    item.isHome = false:
+                    item.isHome = true
+            })
+        ));
+        this.setState({ baseTimeDiff: chosen.TimeDiff, buttonHomeClicked:true})
     }
 
     /** Handle when user remove a location item */
     onRemoveClick(chosen){
-        return (event) => {
-            let { city } = this.state;
-            const indexChosen = city.indexOf(chosen);
-            if (city.length === 1)
-            {
-                this.setState({
-                    city:[
-                        ...city.slice(0, indexChosen),
-                        ...city.slice(indexChosen+1)
-                    ]})
-            }
-            else
-            {
-                // if Home location is delete -> let the first item is Home location
-                city = [
+        let { city } = this.state;
+        const indexChosen = city.indexOf(chosen);
+        if (city.length === 1)
+        {
+            this.setState({
+                city:[
                     ...city.slice(0, indexChosen),
                     ...city.slice(indexChosen+1)
+                ]})
+        }
+        else
+        {
+            // if Home location is delete -> let the first item is Home location
+            city = [
+                ...city.slice(0, indexChosen),
+                ...city.slice(indexChosen+1)
+            ]
+            if (this.state.city.length > 0 && chosen.isHome===true)
+            {
+                city = [
+                    {
+                        ...city[0],
+                        isHome:true,                            
+                    },
+                    ...city.slice(1)
                 ]
-                if (this.state.city.length > 0 && chosen.isHome===true)
-                {
-                    city = [
-                        {
-                            ...city[0],
-                            isHome:true,                            
-                        },
-                        ...city.slice(1)
-                    ]
-                    this.setState({
-                        city: city,
-                        baseTimeDiff:city[0].TimeDiff,
-                        
-                    })
-                }
+                this.setState({
+                    city: city,
+                    baseTimeDiff:city[0].TimeDiff,
+                    
+                })
             }
         }
+
     }
 
     /** Handle when user change date */
@@ -263,6 +262,16 @@ class App extends Component {
 
     /** Look for localStorage and update state city if possible */
     componentWillMount(){
+        // localStorage.setItem('email','pvkhai98dn@gmail.com');
+        // localStorage.setItem('user',JSON.stringify({token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNTJlNzNmOC1jZDc0LTQ2MWQtOTZiYy1iM2Y1YmRlYWFiNDEiLCJpYXQiOjE1OTc3NTE5MjAsImV4cCI6MTU5ODM1NjcyMH0.tAP8EabYNCNlJNIB9LIGghJHbRX_uUZmlgHHjaPD07o"}))
+        if (localStorage.getItem('email') !== null && localStorage.getItem('user') !== null)
+        {
+            this.setState({isLogin:true})
+        }
+        else
+        {
+            this.setState({isLogin:false})
+        }
         if (localStorage.getItem('city') !== null)
         {
             let city = JSON.parse(localStorage.getItem('city'));
@@ -297,7 +306,7 @@ class App extends Component {
     onSubmitGetEvent = (event) => {
         event.preventDefault();
         let data = userService.getEventList();
-        console.log("list: ",data);
+        // console.log("list: ",data);
     }
 
     /** Change visibility of Modal new event */
@@ -339,27 +348,9 @@ class App extends Component {
         }
 
         userService.createEvent(addEvent);
+        NotificationManager.success('Create event successfully');
         this.toggleNewEvent();
-        // axios.post(`https://jsonplaceholder.typicode.com/posts`, addEvent)
-        //     .then(function (response) {
-        //         // console.log(JSON.stringify(response));
-        //     })
-        //     .catch(function (error) {
-        //         // console.log(error);
-        //     });
-        
-        // Test with fetch
-        // fetch('https://webhook.site/184211d4-bf10-40ee-bc5e-b6e14f68acf3',{
-        //     method:'post',
-        //     mode:'no-cors',
-        //     headers:{
-        //         'Accept':'application/json',
-        //         'Content-type':'application/json',
-        //     },
-        //     body: JSON.stringify(addEvent)
-        // })
     }
-    
 
     /** Handle when user type event name */
     onChangeEventName = (event) => {
@@ -389,7 +380,7 @@ class App extends Component {
                         onChange={this.onChangeDatePicker} 
                         startTime={this.state.startTime} 
                     /> 
-                    <Button color="success" className="buttonNewEvent" onClick={this.toggleNewEvent}>New event</Button> 
+                    <Button color="primary" className="buttonNewEvent" onClick={this.toggleNewEvent} style={{display: this.state.isLogin?"block":"none"}}>Save event</Button> 
                     <Modal isOpen={this.state.showModalNewEvent} toggle={this.toggleNewEvent} className="modalNewEvent">
                         <ModalHeader toggle={this.toggleNewEvent}>Create new event</ModalHeader>
                         <ModalBody>
@@ -444,7 +435,7 @@ class App extends Component {
                             </ListGroup>
                         </ModalBody>
                         <ModalFooter>
-                            <Button color="primary" type="submit" onClick={this.onSubmitAddEvent}>Save</Button>
+                            <Button color="primary" type="submit" onClick={this.onSubmitAddEvent}>Save</Button>                    
                             <Button color="secondary" onClick={this.toggleNewEvent}>Cancel</Button>
                         </ModalFooter>
                     </Modal>
@@ -453,15 +444,15 @@ class App extends Component {
                     <div className="background-timeline">
                         <ul>
                             {this.state.city.length > 0 && this.state.city.map((item, idx) => (
-                                <li key={item} onDragOver = {() => this.onDragOver(idx)}>
+                                <li key={item.name} onDragOver = {() => this.onDragOver(idx)}>
                                     <div 
                                         className="drag"  
                                         onDragStart={e => this.onDragStart(e, idx)}
                                         onDragEnd={this.onDragEnd}
                                     >
                                         <div className="home-remove">
-                                            <Home onClick={this.onHomeClick(item)}/>
-                                            <Remove onClick={this.onRemoveClick(item)}/>
+                                            <Home onClick={() => this.onHomeClick(item)}/>
+                                            <Remove onClick={() => this.onRemoveClick(item)}/>
                                         </div>
                                         <div className="clock-data" draggable>
                                             <TimeSelectedItem item={item}/>
@@ -483,7 +474,8 @@ class App extends Component {
                             displayTime = {this.displayTime}
                         />   
                     </div>          
-                </main>                        
+                </main>   
+                <NotificationContainer/>           
             </div>
         );
     }    

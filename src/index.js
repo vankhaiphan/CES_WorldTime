@@ -2,8 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import App from './App';
-import LoginRouter from './pages/LoginRouter';
+import 'react-notifications/lib/notifications.css';
 import Main from './pages/Main';
 import * as serviceWorker from './serviceWorker';
 
