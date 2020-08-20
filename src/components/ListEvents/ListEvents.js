@@ -190,14 +190,14 @@ class ListEvents extends Component {
                     ...city.slice(indexChosen+1)
                 ]})
         }
-        else
+        else if (this.state.city.length > 1)
         {
             // if Home location is delete -> let the first item is Home location
             city = [
                 ...city.slice(0, indexChosen),
                 ...city.slice(indexChosen+1)
             ]
-            if (this.state.city.length > 0 && chosen.isHome===true)
+            if (chosen.isHome===true)
             {
                 city = [
                     {
@@ -210,6 +210,11 @@ class ListEvents extends Component {
                     city: city,
                     baseTimeDiff:city[0].TimeDiff,
                     
+                })
+            }
+            else{
+                this.setState({
+                    city: city
                 })
             }
         }
