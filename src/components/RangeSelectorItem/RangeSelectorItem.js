@@ -1,6 +1,6 @@
 import React from 'react';
 import './RangeSelectorItem.css';
-import RangeSelector, { Margin, Background, Image, Indent, SliderMarker, Scale, TickInterval, MinorTickInterval, Label, Behavior } from 'devextreme-react/range-selector';
+import RangeSelector, { Shutter, Margin, Background, Image, Indent, SliderMarker, Scale, TickInterval, MinorTickInterval, Label, Behavior } from 'devextreme-react/range-selector';
 
 function RangeSelectorItem(props) {
     const {range, startValue, endValue, numberCity, displayTime} = props;
@@ -18,6 +18,7 @@ function RangeSelectorItem(props) {
                 </Background>                  
                 <Indent left={0} right={0}/>
                 <SliderMarker placeholderHeight={20} format="shorttime" />
+                <Shutter opacity={0.4}></Shutter>
                 <Scale startValue={startValue} endValue={endValue} placeholderHeight={-20} style={{"font-weight": "bold"}}>
                     <TickInterval hours={1} />
                     <MinorTickInterval hours={0.5} />

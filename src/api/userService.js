@@ -42,8 +42,10 @@ const deleteEvent = async (eventid) => {
   }).catch(error => console.log(error))
 }
 
-const getUserBoard = () => {
-  return axios.get(API_URL + "user", { headers: authHeader() });
+const editEvent = async(editEvent) => {
+  console.log("editEvent: ", editEvent);
+  let res = await api.patch('/api/v1/event/edit', editEvent)
+    .catch(error => console.log(error))
 };
 
 
@@ -51,5 +53,6 @@ const getUserBoard = () => {
 export default {
   getEventList,
   createEvent,
+  editEvent,
   deleteEvent
 };
