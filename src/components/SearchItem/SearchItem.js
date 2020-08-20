@@ -12,14 +12,14 @@ function SearchItem(pros) {
             onSelect={handleSelect}
         >
             {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-                <div>
+                <div class="search-result">
                     <input
                         {...getInputProps({
                             placeholder: 'Place',
                             className: 'location-search-input',
                         })}
                         />
-                    <div className="autocomplete-dropdown-container">
+                    <div className="autocomplete-dropdown-container" style={{display: `${suggestions.length ? 'block' : 'none'}`}}>
                         {loading && <div>Loading...</div>}
                         {suggestions.map(suggestion => {
                             const className = suggestion.active

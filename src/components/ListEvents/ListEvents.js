@@ -1,60 +1,53 @@
 import React, { Component } from "react";
 import EventItem from "../EventItems/EventItem";
-import { Table, Button } from 'reactstrap';
+import { Table, Button, ListGroup, ListGroupItem } from 'reactstrap';
 import userService from '../../api/userService';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 class ListEvents extends Component {
 	state = {
 		data : [
 		],
-		subCities:[	
-		]
 	}
 	constructor(props){
 		super(props);
 		this.onSubmitGetEvent();
 		this.deleteEvent = this.deleteEvent.bind(this);
+		this.editEvent = this.editEvent.bind(this);
 	}
 	onSubmitGetEvent = async () => {
 		let dataReceive = await userService.getEventList();
-		let subCities = []
-		for (let i = 0; i < dataReceive.length; i++)
-		{
-			if (dataReceive[i].subcities.length > 0)
-			{
-				let j = 0;
-				let cities = "";
-				while (j < dataReceive[i].subcities.length)
-				{
-					if (j === dataReceive[i].subcities.length - 1)
-						cities += dataReceive[i].subcities[j].location.split(',')[0];
-					else
-						cities += dataReceive[i].subcities[j].location.split(',')[0] + " ,";
-					j += 1;
-				}
-				subCities[i] = cities;
-			}
-			else{
-				subCities[i] = ""
-			}
-		}
-		this.setState({data: dataReceive, subCities: subCities})
-		console.log("list: ",this.state.data);
-		console.log("list subcities: ",this.state.subCities);
+		this.setState({data: dataReceive})
 	}
 	
 	deleteEvent = (eventid) => {
 		return async(event) => {
 			let dataReceive = await userService.deleteEvent(eventid);
-			await window.location.reload();
+			setTimeout(() => {
+				this.onSubmitGetEvent();
+			},500)
+			NotificationManager.success('Delete event successfully');
 		}
 		
 	}
 
+	editEvent = (eventid) => {
+		return async(event) => {
+
+		}
+	}
+
+	createEvent = async () => {
+
+	}
+
 	render() {
 		return (
-				<div class="table-responsive">
-					<Table class="table">
+				<div class="table-responsive" style={{background:"#fff"}}>
+					<div className="mr-2" style={{float: "right"}}>
+						<Button color="primary" className="buttonCreateEvent" onClick={this.createEvent} href="/">Create</Button>
+					</div>
+					<Table class="table" hover>
 						<thead>
 							<tr>
 								<th>Event Name</th>
@@ -64,7 +57,7 @@ class ListEvents extends Component {
 								<th>Invited Location</th>
 								<th>Time Start</th>
 								<th>Time End</th>
-								<th>Edit or Delete</th>
+								<th>Edit/Delete</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -74,16 +67,41 @@ class ListEvents extends Component {
 									<td>{item.description}</td>
 									<td>{item.hostname}</td>
 									<td>{item.baselocation.split(',')[0]}</td>							
-									<td>{this.state.subCities[idx]}</td>
-									<td>{item.timestart}</td>
-									<td>{item.timeend}</td>
-									<td><Button color="danger" className="buttonDeleteEvent" onClick={this.deleteEvent(item.eventid)}>Delete</Button></td>
+									<td>
+										<ListGroup>
+										{item.subcities.length > 0 && item.subcities.map((subitem, subidx) =>(											
+											<ListGroupItem>{subitem.location.split(',')[0]}</ListGroupItem>
+										))}
+										</ListGroup>
+									</td>
+									<td>
+										<ListGroup>
+											<ListGroupItem>{
+												new Date(item.timestart).getHours() + ":" +
+												new Date(item.timestart).getMinutes()}</ListGroupItem>
+											<ListGroupItem>{item.timestart.replace('-', '/').split('T')[0].replace('-', '/')}
+											</ListGroupItem>
+										</ListGroup>
+									</td>
+									<td>
+										<ListGroup>
+											<ListGroupItem>{
+												new Date(item.timeend).getHours() + ":" +
+												new Date(item.timeend).getMinutes()}</ListGroupItem>
+											<ListGroupItem>{item.timeend.replace('-', '/').split('T')[0].replace('-', '/')}
+											</ListGroupItem>
+										</ListGroup>
+									</td>
+									<td>
+										<Button color="warning" block className="buttonEditEvent" onClick={this.editEvent(item.eventid)}>Edit</Button>
+										<Button color="danger" block className="buttonDeleteEvent" onClick={this.deleteEvent(item.eventid)}>Delete</Button>
+									</td>
 								</tr>
 							))}
 						</tbody>
 					</Table>
-				</div>
-			
+					<NotificationContainer/>
+				</div>			
 		);
 	}
 }

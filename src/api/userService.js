@@ -10,7 +10,8 @@ const api = axios.create({
       // 'accept': 'application/json',
       // 'content-type': 'text/plain;charset=UTF-8',
       // 'sec-fetch-site': 'no-cors',
-      'access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNTJlNzNmOC1jZDc0LTQ2MWQtOTZiYy1iM2Y1YmRlYWFiNDEiLCJpYXQiOjE1OTc3NTE5MjAsImV4cCI6MTU5ODM1NjcyMH0.tAP8EabYNCNlJNIB9LIGghJHbRX_uUZmlgHHjaPD07o'
+      // 'access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNTJlNzNmOC1jZDc0LTQ2MWQtOTZiYy1iM2Y1YmRlYWFiNDEiLCJpYXQiOjE1OTc3NTE5MjAsImV4cCI6MTU5ODM1NjcyMH0.tAP8EabYNCNlJNIB9LIGghJHbRX_uUZmlgHHjaPD07o'
+      'access-token':  localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')).token:''
   }
 })
 
@@ -38,7 +39,7 @@ const deleteEvent = async (eventid) => {
   let res = await api.delete('/api/v1/event/delete', {
     data:{
       eventid: eventid}
-  })
+  }).catch(error => console.log(error))
 }
 
 const getUserBoard = () => {

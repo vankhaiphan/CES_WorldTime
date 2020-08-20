@@ -1,8 +1,12 @@
+.TimeSelectedItem {
+    width: 290px;
+    display: flex;
+    align-items: center;
+}
+
 .icon{
-    margin-top:14px;
     position:relative;
-    width:16px;
-    height:32px;
+    padding: 5px;
     float:left;
     font-weight:700;
     font-size:100%;
@@ -16,10 +20,9 @@
 .location{
     font-size:100%;
     margin:0;
-    padding-top:14px;
     font-weight:normal;
-    width:126px;
-    height:46px;
+    width: 120px;
+    /* height:46px; */
     float:left;
 }
 .location b{
@@ -27,9 +30,11 @@
 }
 
 .city{
-    /* overflow:hidden;
-    white-space:nowrap;
-    text-overflow:ellipsis; */
+    font-size: 14px;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .city small{
@@ -60,10 +65,9 @@
 }
 
 .data{
-    padding-top:14px;
-    width:180px;
-    height:46px;
+    width: 150px;
     display: flex;
+    justify-content: flex-end;
     /* text-align:left; */
     /* position:absolute; */
     /* left:185px; */
@@ -74,7 +78,7 @@
     font-size:12px;
     font-weight:700;
     /* background-color:inherit; */
-    width:80px;
+    width:70px;
     text-align:right;
 }
 .date{
@@ -82,7 +86,7 @@
     /* vertical-align:middle; */
     color:#888;
     /* background-color:inherit; */
-    width:80px;
+    width: 70px;
     text-align:right;
 }
 

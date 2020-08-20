@@ -9,7 +9,7 @@ function RangeSelectorItem(props) {
             <RangeSelector
                 id="range-selector"
                 defaultValue={range}   
-                size={{height: 60*numberCity, width:769}}
+                size={{height: 66 *numberCity, width:769}}
                 onValueChanged = {displayTime}            
             >
                 <Margin top={0} bottom={0}/>

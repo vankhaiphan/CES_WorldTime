@@ -1,14 +1,15 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Link, Redirect } from "react-router-dom";
 import Login from "./Login";
 import SignUp from "./SignUp";
-import Navbar from "./NavBar";
+import NavBar from "./Navbar";
 import "./Login_Signup.css";
 
 class LoginRouter extends Component {
   render() {
+    
     return (
-      <Router>
+      
         <body>
           <div className="BTN  ">
             <button >
@@ -23,12 +24,9 @@ class LoginRouter extends Component {
             </button>
           </div>
 
-          <Switch>
-            <Route path="/login" exact component={Login} />
-            <Route path="/signup" component={SignUp} />
-          </Switch>
+         
           </body>
-      </Router>
+    
     );
   }
 }

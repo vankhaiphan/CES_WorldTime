@@ -1,20 +1,17 @@
-import React, { useState, Component } from "react";
+import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import "./Login_Signup.css";
 import authService from "../api/authService";
-import { PASSWORD_MIN_LENGTH, emailRegex, formValid } from "./formValidation";
+import { PASSWORD_MIN_LENGTH, emailRegex, formValid,userConstants } from "./formValidation";
 
 class Login extends Component {
-  
   constructor(props) {
     super(props);
-    
+
     this.state = {
       email: null,
       password: null,
-      message: null,
-      Loading: false,
-      message: null,
+      isLogin :false,
       formErrors: {
         email: "",
         password: "",
@@ -25,43 +22,26 @@ class Login extends Component {
   }
 
   handleSubmit = (e) => {
-    e.preventDefault();
-    this.state.Loading= true;
     
-
+    e.preventDefault();
     if (formValid(this.state)) {
-      //CAll API login
-      //Need URL
-      authService.login( this.state.email,  this.state.password).then(
-        () => {
-          this.history.push("/account");
-          window.location.reload();
-        },
-        (error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          console.log(error);
-          this.state.Loading = false;
-          this.state.message= resMessage;
-        }
-      );
-
-      console.log(`
-            --SUBMITTING--
-           
-            Email: ${this.state.email}
-            Password: ${this.state.password}
-          `);
-    } else {
-      this.state.Loading = false;
-      console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
+    const email =this.state.email;
+    const password = this.state.password;
+     authService.login(email, password)
+     .then(() =>{
+      alert(userConstants.LOGIN_SUCCESS);
+     
+      window.location.reload();
+      
+     },
+     (error) => {
+      alert(userConstants.LOGIN_FAILURE);
     }
-  };
 
+   );
+  }
+  };
+ 
   handleChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
@@ -83,14 +63,13 @@ class Login extends Component {
         break;
     }
 
-    this.setState({ formErrors, [name]: value });
+    this.setState({ formErrors, [name]: value }, );
   };
 
   render() {
-    const { email, password, loggedIn } = this.state;
-
-    if (this.state.LoggedIn) {
-      return <Redirect to="/dashboard" />;
+    var logged = localStorage.getItem("email");
+    if (logged !== null) {
+      return <Redirect to="/dashboard"></Redirect>;
     }
     const { formErrors } = this.state;
 
@@ -130,7 +109,7 @@ class Login extends Component {
             <div className="logIn">
               <button type="submit">Login</button>
             </div>
-            <Link to="./signup">I don't have an account'</Link>
+            <Link to="./signup">I don't have an account!</Link>
           </form>
         </div>
       </div>

@@ -1,12 +1,14 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import authService from "../api/authService";
+import { Link, Redirect } from "react-router-dom";
 import "./Login_Signup.css";
+import authService from "../api/authService";
+
 import {
   PASSWORD_MIN_LENGTH,
   NAME_MIN_LENGTH,
   emailRegex,
   formValid,
+  userConstants,
 } from "./formValidation";
 class SignUp extends Component {
   constructor(props) {
@@ -17,8 +19,7 @@ class SignUp extends Component {
       lastName: null,
       email: null,
       password: null,
-      message: null,
-      successful: false,
+
       formErrors: {
         firstName: "",
         lastName: "",
@@ -35,40 +36,22 @@ class SignUp extends Component {
 
     if (formValid(this.state)) {
       //CAll API Signup
-      authService
-        .signup(
-          this.state.firstName,
-          this.state.lastName,
-          this.state.email,
-          this.state.password
-        )
-        .then(
-          (response) => {
-            this.state.message = response.data.message;
-            this.state.successful = true;
-          },
-          (error) => {
-            const resMessage =
-              (error.response &&
-                error.response.data &&
-                error.response.data.message) ||
-              error.message ||
-              error.toString();
 
-            this.state.message = resMessage;
-            this.state.successful = false;
-          }
-        )
+      const firstname = this.state.firstName;
+      const lastname = this.state.lastName;
+      const email = this.state.email;
+      const password = this.state.password;
+      authService
+        .signup(firstname, lastname, email, password)
+
+        .then(function (response) {
+          console.log(response);
+          alert(userConstants.SIGNUP_SUCCESS);
+          window.location.reload();
+        })
         .catch(function (error) {
           console.log(error);
         });
-      console.log(`
-          --SUBMITTING--
-          First Name: ${this.state.firstName}
-          Last Name: ${this.state.lastName}
-          Email: ${this.state.email}
-          Password: ${this.state.password}
-        `);
     } else {
       console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
     }
@@ -111,12 +94,15 @@ class SignUp extends Component {
   };
 
   render() {
+    var logged = localStorage.getItem("email");
+    if (logged !== null) {
+      return <Redirect to="/dashboard"></Redirect>;
+    }
     const { formErrors } = this.state;
 
     return (
       <div className="wrapper">
-        {!this.state.successful && (
-          <div className="form-wrapper">
+        <div className="form-wrapper">
           <h1>Sign Up</h1>
           <form onSubmit={this.handleSubmit} noValidate>
             <div className="firstName">
@@ -185,9 +171,6 @@ class SignUp extends Component {
             </div>
           </form>
         </div>
-        )
-
-        }
       </div>
     );
   }
