@@ -421,12 +421,23 @@ class ListEvents extends Component {
 
 	createEvent = async () => {
 
-	}
+    }
+    
+    displayHour = date => {
+        const hour = date.toLocaleTimeString([], {timeStyle: 'short'});
+        return hour;
+    }
+    
+    displayDate = date => {
+        const day = date.toDateString().split(' ').slice(1).join(' ');
+        return day;
+    }
 
 	render() {
 		return (
-				<div class="table-responsive" style={{background:"#fff"}}>
-					<div className="mr-2" style={{float: "right"}}>
+				<div class="list-event table-responsive" style={{background:"#fff"}}>
+					<div className="list-event--header" style={{float: "right"}}>
+                        <div class="list-event--heading">List Events</div>
 						<Button color="primary" className="buttonCreateEvent" onClick={this.createEvent} href="/">Create</Button>
 					</div>
 					<Table class="table">
@@ -439,7 +450,7 @@ class ListEvents extends Component {
 								<th>Invited Location</th>
 								<th>Time Start</th>
 								<th>Time End</th>
-								<th>Edit/Delete</th>
+								<th className="text-center">Action</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -450,31 +461,31 @@ class ListEvents extends Component {
 									<td>{item.hostname}</td>
 									<td>{item.baselocation.split(',')[0]}</td>							
 									<td>
-										<ListGroup>
+										<ListGroup className="list-event--group">
 										{item.subcities.length > 0 && item.subcities.map((subitem, subidx) =>(											
-											<ListGroupItem>{subitem.location.split(',')[0]}</ListGroupItem>
+											<ListGroupItem className="list-event--item">{subitem.location.split(',')[0]}</ListGroupItem>
 										))}
 										</ListGroup>
 									</td>
 									<td>
-										<ListGroup>
-											<ListGroupItem>{
-												new Date(item.timestart).getHours() + ":" +
-												new Date(item.timestart).getMinutes()}</ListGroupItem>
-											<ListGroupItem>{item.timestart.replace('-', '/').split('T')[0].replace('-', '/')}
-											</ListGroupItem>
+										<ListGroup className="list-event--group">
+											<ListGroupItem className="list-event--item">
+                                                {this.displayHour(new Date(item.timestart))}
+                                                <br/>
+                                                {this.displayDate(new Date(item.timestart))}
+                                            </ListGroupItem>
 										</ListGroup>
 									</td>
 									<td>
-										<ListGroup>
-											<ListGroupItem>{
-												new Date(item.timeend).getHours() + ":" +
-												new Date(item.timeend).getMinutes()}</ListGroupItem>
-											<ListGroupItem>{item.timeend.replace('-', '/').split('T')[0].replace('-', '/')}
-											</ListGroupItem>
+										<ListGroup className="list-event--group">
+											<ListGroupItem className="list-event--item">
+                                                {this.displayHour(new Date(item.timeend))}
+                                                <br/>
+                                                {this.displayDate(new Date(item.timeend))}
+                                            </ListGroupItem>
 										</ListGroup>
 									</td>
-									<td>
+									<td className="list-event--action">
 										<Button color="warning" block className="buttonEditEvent" onClick={this.editEvent(item)}>Edit</Button>
 										<Button color="danger" block className="buttonDeleteEvent" onClick={this.deleteEvent(item.eventid)}>Delete</Button>
 									</td>
@@ -483,7 +494,7 @@ class ListEvents extends Component {
 						</tbody>
 					</Table>
 					<Modal isOpen={this.state.showModalEditEvent} toggle={this.toggleEditEvent} className="editModal">
-						<ModalHeader toggle={this.toggleEditEvent} className="editModalHeader">Edit event</ModalHeader >
+						<ModalHeader toggle={this.toggleEditEvent} className="editModalHeader">Edit event</ModalHeader>
 						<ModalBody className="editModalBody">
 							<div className="Header">
 								<SearchItem 
